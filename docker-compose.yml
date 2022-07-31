@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: lukacs
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: nexura_test
+    container_name: nexura_test-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./src:/var/www
+    networks:
+      - nexura_test
+
+  nginx:
+    image: nginx:alpine
+    container_name: nexura_test-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./src:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - nexura_test
+
+networks:
+  nexura_test:
